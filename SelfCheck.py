@@ -1,7 +1,12 @@
+import discord
+import datetime
+import hcskr
 from discord.ext import commands
-prefix = "본인의 접두사입니다!"
-bot = commands.Bot(command_prefix = "본인의 접두사")
 
+prefix = "본인의 접두사"
+bot = commands.Bot(command_prefix = prefix)
+error_embed_color = 0xff0008
+success_embed_color = 0x00ff37
 
 @bot.event
 async def on_ready():
@@ -26,17 +31,16 @@ async def 토큰생성(ctx, name=None, birth=None, area=None, level=None, school
             embed.timestamp = datetime.datetime.utcnow()
             return await ctx.channel.send(embed=embed)
         else:
-            embed = discord.Embed(title=f"자가진단 토큰생성 완료!", description=result['token'], color=random_color())
-            embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
-            embed.timestamp = datetime.datetime.utcnow()
-            await ctx.send(embed=embed)
-    if not ctx.guild:
-        print('dmmmm')
-    else:
-        embed = discord.Embed(title=":x: DM에서 실행해 주세요", description='이 명령어는 DM에서만 사용할 수 있어요', color=error_embed_color)
-        embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
-        embed.timestamp = datetime.datetime.utcnow()
-        return await ctx.channel.send(embed=embed)
+            if not ctx.guild:
+                embed = discord.Embed(title=f"자가진단 토큰생성 완료!", description=result['token'], color=success_embed_color)
+                embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
+                embed.timestamp = datetime.datetime.utcnow()
+                await ctx.send(embed=embed)
+            else:
+                embed = discord.Embed(title=":x: DM에서 실행해 주세요", description='이 명령어는 DM에서만 사용할 수 있어요', color=error_embed_color)
+                embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
+                embed.timestamp = datetime.datetime.utcnow()
+                return await ctx.channel.send(embed=embed)
 
 
 @bot.command()
@@ -58,10 +62,10 @@ async def 진단하기(ctx, hcs_token=None):
             return await ctx.channel.send(embed=embed)
         else:
             embed = discord.Embed(title=f"자가진단 완료!", description=f"{result['regtime']}에 자가진단을 완료했어요",
-                                  color=random_color())
+                                  color=success_embed_color)
             embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
             embed.timestamp = datetime.datetime.utcnow()
             await ctx.send(embed=embed)
             
             
-bot.run("본인의 토큰")
+bot.run("봇 토큰")
